@@ -202,7 +202,7 @@ static char *bytes(uint64_t b)
 static const char *COMMAND_NAME;
 static void show_usage(void)
 {
-	fprintf(stderr, "Usage: %s %s { <interface> | all | interfaces } [public-key | private-key | listen-port | fwmark | peers | preshared-keys | endpoints | allowed-ips | latest-handshakes | transfer | persistent-keepalive | dump]\n", PROG_NAME, COMMAND_NAME);
+	fprintf(stderr, "Usage: %s %s { <interface> | all | interfaces } [public-key | private-key | hidden-mask | listen-port | fwmark | peers | preshared-keys | endpoints | allowed-ips | latest-handshakes | transfer | persistent-keepalive | dump]\n", PROG_NAME, COMMAND_NAME);
 }
 
 static void pretty_print(struct wgdevice *device)
@@ -216,6 +216,8 @@ static void pretty_print(struct wgdevice *device)
 		terminal_printf("  " TERMINAL_BOLD "public key" TERMINAL_RESET ": %s\n", key(device->public_key));
 	if (device->flags & WGDEVICE_HAS_PRIVATE_KEY)
 		terminal_printf("  " TERMINAL_BOLD "private key" TERMINAL_RESET ": %s\n", masked_key(device->private_key));
+	if (device->flags & WGDEVICE_HAS_HIDDEN_MASK)
+		terminal_printf("  " TERMINAL_BOLD "hidden mask" TERMINAL_RESET ": %s\n", key(device->hidden_mask));
 	if (device->listen_port)
 		terminal_printf("  " TERMINAL_BOLD "listening port" TERMINAL_RESET ": %u\n", device->listen_port);
 	if (device->fwmark)
@@ -300,6 +302,10 @@ static bool ugly_print(struct wgdevice *device, const char *param, bool with_int
 		if (with_interface)
 			printf("%s\t", device->name);
 		printf("%s\n", maybe_key(device->private_key, device->flags & WGDEVICE_HAS_PRIVATE_KEY));
+	} else if (!strcmp(param, "hidden-mask")) {
+		if (with_interface)
+			printf("%s\t", device->name);
+		printf("%s\n", maybe_key(device->hidden_mask, device->flags & WGDEVICE_HAS_HIDDEN_MASK));
 	} else if (!strcmp(param, "listen-port")) {
 		if (with_interface)
 			printf("%s\t", device->name);

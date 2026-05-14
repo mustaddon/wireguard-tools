@@ -159,6 +159,8 @@ again:
 	if (!peer) {
 		uint32_t flags = 0;
 
+		if (dev->flags & WGDEVICE_HAS_HIDDEN_MASK)
+			mnl_attr_put(nlh, WGDEVICE_A_HIDDEN_MASK, sizeof(dev->hidden_mask), dev->hidden_mask);
 		if (dev->flags & WGDEVICE_HAS_PRIVATE_KEY)
 			mnl_attr_put(nlh, WGDEVICE_A_PRIVATE_KEY, sizeof(dev->private_key), dev->private_key);
 		if (dev->flags & WGDEVICE_HAS_LISTEN_PORT)
@@ -419,6 +421,12 @@ static int parse_device(const struct nlattr *attr, void *data)
 		if (!mnl_attr_validate(attr, MNL_TYPE_STRING)) {
 			strncpy(device->name, mnl_attr_get_str(attr), sizeof(device->name) - 1);
 			device->name[sizeof(device->name) - 1] = '\0';
+		}
+		break;
+	case WGDEVICE_A_HIDDEN_MASK:
+		if (mnl_attr_get_payload_len(attr) == sizeof(device->hidden_mask)) {
+			memcpy(device->hidden_mask, mnl_attr_get_payload(attr), sizeof(device->hidden_mask));
+			device->flags |= WGDEVICE_HAS_HIDDEN_MASK;
 		}
 		break;
 	case WGDEVICE_A_PRIVATE_KEY:

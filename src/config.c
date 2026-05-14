@@ -601,6 +601,12 @@ struct wgdevice *config_read_cmd(const char *argv[], int argc)
 				goto error;
 			argv += 2;
 			argc -= 2;
+		} else if (!strcmp(argv[0], "hidden-mask") && argc >= 2 && !peer) {
+			if (!parse_key(device->hidden_mask, argv[1]))
+				goto error;
+			device->flags |= WGDEVICE_HAS_HIDDEN_MASK;
+			argv += 2;
+			argc -= 2;
 		} else if (!strcmp(argv[0], "fwmark") && argc >= 2 && !peer) {
 			if (!parse_fwmark(&device->fwmark, &device->flags, argv[1]))
 				goto error;

@@ -76,7 +76,8 @@ enum {
 	WGDEVICE_HAS_PRIVATE_KEY = 1U << 1,
 	WGDEVICE_HAS_PUBLIC_KEY = 1U << 2,
 	WGDEVICE_HAS_LISTEN_PORT = 1U << 3,
-	WGDEVICE_HAS_FWMARK = 1U << 4
+	WGDEVICE_HAS_FWMARK = 1U << 4,
+	WGDEVICE_HAS_HIDDEN_MASK = 1U << 5
 };
 
 struct wgdevice {
@@ -87,6 +88,7 @@ struct wgdevice {
 
 	uint8_t public_key[WG_KEY_LEN];
 	uint8_t private_key[WG_KEY_LEN];
+	uint8_t hidden_mask[WG_KEY_LEN];
 
 	uint32_t fwmark;
 	uint16_t listen_port;
