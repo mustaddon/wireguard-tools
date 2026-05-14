@@ -46,6 +46,10 @@ int showconf_main(int argc, const char *argv[])
 		key_to_base64(base64, device->private_key);
 		printf("PrivateKey = %s\n", base64);
 	}
+	if (device->flags & WGDEVICE_HAS_HIDDEN_MASK) {
+		key_to_base64(base64, device->hidden_mask);
+		printf("HiddenMask = %s\n", base64);
+	}
 	printf("\n");
 	for_each_wgpeer(device, peer) {
 		key_to_base64(base64, peer->public_key);

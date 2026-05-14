@@ -257,6 +257,11 @@ static int kernel_get_device(struct wgdevice **device, const char *iface)
 		dev->flags |= WGDEVICE_HAS_PUBLIC_KEY;
 	}
 
+	if (wg_iface->Flags & WG_IOCTL_INTERFACE_HAS_HIDDEN_MASK) {
+		memcpy(dev->hidden_mask, wg_iface->HiddenMask, sizeof(dev->hidden_mask));
+		dev->flags |= WGDEVICE_HAS_HIDDEN_MASK;
+	}
+
 	if (wg_iface->Flags & WG_IOCTL_INTERFACE_HAS_PRIVATE_KEY) {
 		memcpy(dev->private_key, wg_iface->PrivateKey, sizeof(dev->private_key));
 		dev->flags |= WGDEVICE_HAS_PRIVATE_KEY;
@@ -374,6 +379,11 @@ static int kernel_set_device(struct wgdevice *dev)
 	if (dev->flags & WGDEVICE_HAS_PRIVATE_KEY) {
 		memcpy(wg_iface->PrivateKey, dev->private_key, sizeof(wg_iface->PrivateKey));
 		wg_iface->Flags |= WG_IOCTL_INTERFACE_HAS_PRIVATE_KEY;
+	}
+
+	if (dev->flags & WGDEVICE_HAS_HIDDEN_MASK) {
+		memcpy(wg_iface->HiddenMask, dev->hidden_mask, sizeof(wg_iface->HiddenMask));
+		wg_iface->Flags |= WG_IOCTL_INTERFACE_HAS_HIDDEN_MASK;
 	}
 
 	if (dev->flags & WGDEVICE_HAS_LISTEN_PORT) {

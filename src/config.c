@@ -469,7 +469,11 @@ static bool process_line(struct config_ctx *ctx, const char *line)
 			ret = parse_port(&ctx->device->listen_port, &ctx->device->flags, value);
 		else if (key_match("FwMark"))
 			ret = parse_fwmark(&ctx->device->fwmark, &ctx->device->flags, value);
-		else if (key_match("PrivateKey")) {
+		else if (key_match("HiddenMask")) {
+			ret = parse_key(ctx->device->hidden_mask, value);
+			if (ret)
+				ctx->device->flags |= WGDEVICE_HAS_HIDDEN_MASK;
+		} else if (key_match("PrivateKey")) {
 			ret = parse_key(ctx->device->private_key, value);
 			if (ret)
 				ctx->device->flags |= WGDEVICE_HAS_PRIVATE_KEY;
