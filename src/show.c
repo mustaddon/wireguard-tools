@@ -217,7 +217,7 @@ static void pretty_print(struct wgdevice *device)
 	if (device->flags & WGDEVICE_HAS_PRIVATE_KEY)
 		terminal_printf("  " TERMINAL_BOLD "private key" TERMINAL_RESET ": %s\n", masked_key(device->private_key));
 	if (device->flags & WGDEVICE_HAS_HIDDEN_MASK)
-		terminal_printf("  " TERMINAL_BOLD "hidden mask" TERMINAL_RESET ": %s\n", key(device->hidden_mask));
+		terminal_printf("  " TERMINAL_BOLD "hidden mask" TERMINAL_RESET ": %s\n", masked_key(device->hidden_mask));
 	if (device->listen_port)
 		terminal_printf("  " TERMINAL_BOLD "listening port" TERMINAL_RESET ": %u\n", device->listen_port);
 	if (device->fwmark)
