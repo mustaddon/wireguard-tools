@@ -45,6 +45,10 @@ static int userspace_set_device(struct wgdevice *dev)
 		key_to_hex(hex, dev->private_key);
 		fprintf(f, "private_key=%s\n", hex);
 	}
+	if (dev->flags & WGDEVICE_HAS_HIDDEN_MASK) {
+		key_to_hex(hex, dev->hidden_mask);
+		fprintf(f, "hidden_mask=%s\n", hex);
+	}
 	if (dev->flags & WGDEVICE_HAS_LISTEN_PORT)
 		fprintf(f, "listen_port=%u\n", dev->listen_port);
 	if (dev->flags & WGDEVICE_HAS_FWMARK)
@@ -177,6 +181,10 @@ static int userspace_get_device(struct wgdevice **out, const char *iface)
 				break;
 			curve25519_generate_public(dev->public_key, dev->private_key);
 			dev->flags |= WGDEVICE_HAS_PRIVATE_KEY | WGDEVICE_HAS_PUBLIC_KEY;
+		} else if (!peer && !strcmp(key, "hidden_mask")) {
+			if (!key_from_hex(dev->hidden_mask, value))
+				break;
+			dev->flags |= WGDEVICE_HAS_HIDDEN_MASK;
 		} else if (!peer && !strcmp(key, "listen_port")) {
 			dev->listen_port = NUM(0xffffU);
 			dev->flags |= WGDEVICE_HAS_LISTEN_PORT;
